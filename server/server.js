@@ -30,8 +30,9 @@ app.get('/todos',(req,res) =>{
        (e) => console.log(e)
     )
 });
+ 
 
-//todos get with passing a todos id
+//todos get/todos/:id
 app.get('/todos/:id',(req,res) =>{
     var id = req.params.id;
      if(!ObjectID.isValid(id)) return res.status(404).send();
@@ -44,25 +45,20 @@ app.get('/todos/:id',(req,res) =>{
         }).catch((e) =>res.status(400).send());
 });
 
-//users post
-app.post('/users',(req, res) =>{
-    var user = new User({
-        name: req.body.name,
-        email: req.body.email
-    });
-    user.save().then(
-        (doc) => res.send(doc),
-        (e) => res.status(400).send(e)
-    );
-  });
-
-  //users get
-app.get('/todos',(req,res) =>{
-    User.find().then(
-        (users) =>res.send({users}),
-       (e) => console.log(e)
-    )
+//delete /todos/:id
+app.delete('/todos/:id', (req, res) =>{
+    var id = req.params.id;
+    if(!ObjectID.isValid(id)) return res.status(404).send();
+    Todo.findByIdAndRemove(id).then(
+        (todo) =>{
+            if(todo) res.send({todo});
+            res.status(404).send();
+         }
+         
+    ).catch((e) =>res.status(400).send());
 });
+
+
 
 //patch/update request
 app.patch('/todos/:id', (req,res) =>{
