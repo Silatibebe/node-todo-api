@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 const  validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
-//userSchema
+
+//UserSchema
 var UserSchema = new mongoose.Schema(
     {
         // name: {
@@ -41,7 +42,8 @@ var UserSchema = new mongoose.Schema(
         }]
     }
 );
-//User model
+
+
 //pick
 //to only retrurn only certain part of the user
 UserSchema.methods.toJSON =function(){
@@ -62,5 +64,26 @@ UserSchema.methods.generateAuthToken = function(){
         return token;
     });//in then chain we can retrieve the token
 };
+
+//define findByToken method 
+UserSchema.statics.findByToken = function(token){
+var User = this;
+var decoded;
+
+try{
+    decoded = jwt.verify(token, 'abc123');
+} catch(e){
+    return Promise.reject();
+}
+
+return User.findOne({
+    '_id': decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+});
+
+};
+
+//Model -User
 var User = mongoose.model('User', UserSchema);
 module.exports = {User};
