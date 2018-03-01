@@ -66,6 +66,17 @@ UserSchema.methods.generateAuthToken = function(){
     });//in then chain we can retrieve the token
 };
 
+//user --removeToken
+UserSchema.methods.removeToken = function(token){
+   var user = this;
+
+ return  user.update({
+       $pull:{
+           tokens: {token}
+       }
+   });
+};
+
 //define findByToken method 
 UserSchema.statics.findByToken = function(token){
 var User = this;
@@ -104,9 +115,7 @@ UserSchema.statics.findByCredentials = function(email, password){
                     resolve(user);
                     } else {
                         reject();
-                    }
-
-                
+                    }                
             });
         });
 
