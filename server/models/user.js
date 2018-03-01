@@ -84,6 +84,35 @@ return User.findOne({
 });
 
 };
+
+//user --findByCredentials 
+UserSchema.statics.findByCredentials = function(email, password){
+    var User = this;
+    
+    return User.findOne({email}).then((user) => {
+        if(!user) return Promise.reject();
+        return new Promise((resolve,reject) =>{
+            // bcrypt.genSalt(10, (err, salt) =>{
+            //     bcrypt.hash(password, salt, (err, hash) =>{
+            //        var match = bcrypt.compare(hash, user.password);
+            //        if(!match) reject(err);
+            //        resolve(user);                   
+            //    });
+            // });
+            bcrypt.compare(password, user.password, (err, res) =>{
+                if(res){
+                    resolve(user);
+                    } else {
+                        reject();
+                    }
+
+                
+            });
+        });
+
+        
+    });
+};
 // mangoose middleware --will hash the password
 UserSchema.pre('save', function(next){
     var user = this;
