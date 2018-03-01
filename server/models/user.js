@@ -84,7 +84,7 @@ return User.findOne({
 });
 
 };
-// mangoose middleware
+// mangoose middleware --will hash the password
 UserSchema.pre('save', function(next){
     var user = this;
     if(user.isModified('password')){
