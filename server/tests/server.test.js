@@ -290,3 +290,21 @@ describe('POST/users/login', () =>{
        
     });
 });
+
+//DELETE /users/me/token
+
+describe('DELETE/users/me/token', () =>{
+    it('should remove auth token on logout', (done) =>{
+        request(app)
+        .delete('/users/me/token')
+        .set('x-auth', users[0].tokens[0].token)
+        .expect(200)
+        .end((err, res) =>{
+            if(err) done(err);
+            User.findById(users[0]._id).then((user) =>{
+                expect(user.tokens.length).toBe(1);
+                done();
+            }).catch((e) =>done(e));
+        });
+    });
+});
